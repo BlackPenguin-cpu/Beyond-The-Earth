@@ -1,18 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class ObejctPoolInterpace : MonoBehaviour
+public interface ObejctPoolInterpace
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    /// <summary>
+    /// This Func calling by ObjectPoolManager 
+    /// same = Start();
+    /// </summary>
+    public void isCreate();
 }
