@@ -27,6 +27,7 @@ public class ObjectPool : MonoBehaviour
 
         if (parentObjList.ContainsKey(obj.name))
         {
+            //미리 생성되어 비활성화된 오브젝트풀 오브젝트를 체크합니다
             if (parentObjList[obj.name].objNotActiveQueue.Count > 0)
             {
                 var poolObj = parentObjList[obj.name].objNotActiveQueue.Dequeue();
@@ -37,8 +38,9 @@ public class ObjectPool : MonoBehaviour
             }
             else
             {
-
-                parentObjList[obj.name].objNotActiveQueue.Enqueue();
+                var poolObj = Instantiate(obj);
+                parentObjList[obj.name].objNotActiveQueue.Enqueue(poolObj);
+                return poolObj;
             }
         }
         else
@@ -49,8 +51,9 @@ public class ObjectPool : MonoBehaviour
             parentObj.transform.parent = this.gameObject.transform;
 
             parentObjList.Add(obj.name, objectPoolClass);
-            createObj(obj);
+            return createObj(obj);
         }
+
     }
     public GameObject createObj(GameObject obj, Vector3 pos, Quaternion quaternion)
     {
