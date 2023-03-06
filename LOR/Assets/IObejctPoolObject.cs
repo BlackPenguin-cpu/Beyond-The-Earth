@@ -5,4 +5,5 @@ public interface IObjectPoolObject
     /// same = Start();
     /// </summary>
     public void onCreate();
+
 }
