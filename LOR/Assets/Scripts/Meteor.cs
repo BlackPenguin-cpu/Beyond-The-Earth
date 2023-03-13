@@ -18,6 +18,12 @@ public class Meteor : Entity
     {
 
     }
+
+    protected override void Move()
+    {
+        throw new System.NotImplementedException();
+    }
+
     private IEnumerator objDestroy()
     {
         yield return new WaitForSeconds(3);

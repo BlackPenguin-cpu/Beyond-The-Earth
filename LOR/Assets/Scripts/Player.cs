@@ -5,7 +5,6 @@ using UnityEngine;
 public class Player : Entity
 {
     public float fuel;
-    public float speed;
 
     public float skill1Cooldown;
     public float skill1NowCooldown;
@@ -79,13 +78,6 @@ public class Player : Entity
     {
 
     }
-    private void Move()
-    {
-        float hor = Input.GetAxisRaw("Horizontal");
-        float ver = Input.GetAxisRaw("Vertical");
-
-        transform.position = new Vector3(hor, ver) * speed;
-    }
 
     protected override void Die()
     {
@@ -95,5 +87,13 @@ public class Player : Entity
     protected override void Hit()
     {
         throw new System.NotImplementedException();
+    }
+
+    protected override void Move()
+    {
+        float hor = Input.GetAxisRaw("Horizontal");
+        float ver = Input.GetAxisRaw("Vertical");
+
+        transform.position = new Vector3(hor, ver) * speed;
     }
 }

@@ -6,6 +6,7 @@ public abstract class Entity : MonoBehaviour
 {
     public float maxHp;
     public float hp;
+    public float speed;
     protected virtual float Hp
     {
         get { return hp; }
@@ -19,7 +20,7 @@ public abstract class Entity : MonoBehaviour
             }
         }
     }
-
+    protected abstract void Move();
     protected abstract void Die();
     protected abstract void Hit();
 }
