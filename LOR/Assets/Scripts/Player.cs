@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : Entity
 {
@@ -12,6 +14,9 @@ public class Player : Entity
     public float skill2NowCooldown;
     public float skill3Cooldown;
     public float skill3NowCooldown;
+
+    [SerializeField]
+    private GameObject skillCooldownTextObj;
     private void Start()
     {
 
@@ -76,7 +81,21 @@ public class Player : Entity
     }
     private void SkillCooldownNotYetText(string SkillName)
     {
+        string text = $"{SkillName}이 사용 준비 중 입니다...";
+        Text textComponent = skillCooldownTextObj.GetComponent<Text>();
 
+        textComponent.text = text;
+
+
+    }
+    private IEnumerator TextEvade()
+    {
+        while ()
+        {
+            textComponent.color = Color.Lerp(textComponent.color, Color.clear, Time.deltaTime);
+
+            yield return null;
+        }
     }
 
     protected override void Die()
