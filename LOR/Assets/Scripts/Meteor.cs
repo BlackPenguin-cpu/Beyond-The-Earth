@@ -11,6 +11,7 @@ public class Meteor : Entity
             Transform obj = transform.GetChild(i);
             obj.parent = null;
             obj.GetComponent<Rigidbody>().AddForce(Random.insideUnitCircle * 5);
+            objDestroy(obj);
         }
     }
 
@@ -24,9 +25,10 @@ public class Meteor : Entity
         throw new System.NotImplementedException();
     }
 
-    private IEnumerator objDestroy()
+    private IEnumerator objDestroy(Transform obj)
     {
         yield return new WaitForSeconds(3);
+        Destroy(obj);
     }
 
 }
