@@ -6,14 +6,11 @@ using UnityEngine.UI;
 
 public class Player : Entity
 {
+    //마나 같은 느낌으로 해볼까
     public float fuel;
 
-    public float skill1Cooldown;
-    public float skill1NowCooldown;
-    public float skill2Cooldown;
-    public float skill2NowCooldown;
-    public float skill3Cooldown;
-    public float skill3NowCooldown;
+    public float[] skillCooldown = new float[3];
+    public float[] skillNowCooldown = new float[3];
 
     [SerializeField]
     private GameObject skillCooldownTextObj;
@@ -24,8 +21,10 @@ public class Player : Entity
     private void Update()
     {
         InputFunc();
-        skill1Cooldown -= Time.deltaTime;
-        skill2Cooldown -= Time.deltaTime;
+        for (int i = 0; i < skillCooldown.Length; i++)
+        {
+            skillCooldown[i] -= Time.deltaTime;
+        }
     }
 
     private void InputFunc()
@@ -43,10 +42,6 @@ public class Player : Entity
         {
             Skill2();
         }
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-
-        }
     }
     private void Attack()
     {
@@ -55,7 +50,7 @@ public class Player : Entity
     //heal
     private void Skill1()
     {
-        if (skill1NowCooldown > 0)
+        if (skillNowCooldown[0] > 0)
         {
             SkillCooldownNotYetText("수리");
             return;
@@ -64,7 +59,7 @@ public class Player : Entity
     //bomb
     private void Skill2()
     {
-        if (skill2NowCooldown > 0)
+        if (skillNowCooldown[1] > 0)
         {
             SkillCooldownNotYetText("폭탄");
             return;
@@ -73,7 +68,7 @@ public class Player : Entity
     //parrying
     private void Skill3()
     {
-        if (skill3NowCooldown > 0)
+        if (skillNowCooldown[2] > 0)
         {
             SkillCooldownNotYetText("패링");
             return;
@@ -82,30 +77,35 @@ public class Player : Entity
     private void SkillCooldownNotYetText(string SkillName)
     {
         string text = $"{SkillName}이 사용 준비 중 입니다...";
-        Text textComponent = skillCooldownTextObj.GetComponent<Text>();
+
+        Text textComponent = Resources.Load<Text>("SkillText");
+        Instantiate(textComponent, skillCooldownTextObj.transform);
+        Vector3 vec = textComponent.transform.position + new Vector3(0, 50);
 
         textComponent.text = text;
-
+        StartCoroutine(TextEvade(textComponent, vec));
 
     }
-    private IEnumerator TextEvade()
+    private IEnumerator TextEvade(Text text, Vector3 vec)
     {
-        while ()
+        while (text.color.a > 0.05f)
         {
-            textComponent.color = Color.Lerp(textComponent.color, Color.clear, Time.deltaTime);
+            text.color = Color.Lerp(text.color, Color.clear, Time.deltaTime);
+            text.transform.position = Vector3.Lerp(text.transform.position, vec, Time.deltaTime);
 
             yield return null;
         }
+        Destroy(text);
     }
 
     protected override void Die()
     {
-        throw new System.NotImplementedException();
+
     }
 
     protected override void Hit()
     {
-        throw new System.NotImplementedException();
+        CameraManager.instance.CameraShake(2, 0.5f);
     }
 
     protected override void Move()
