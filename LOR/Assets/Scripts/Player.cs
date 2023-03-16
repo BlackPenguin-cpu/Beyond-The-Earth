@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class Player : Entity
 {
+    public static Player instance;
     //마나 같은 느낌으로 해볼까
     public float fuel;
 
@@ -16,7 +17,7 @@ public class Player : Entity
     private GameObject skillCooldownTextObj;
     private void Start()
     {
-
+        instance = this;
     }
     private void Update()
     {
@@ -100,6 +101,7 @@ public class Player : Entity
 
     protected override void Die()
     {
+        CameraManager.instance.CameraShake(5, 5f);
 
     }
 

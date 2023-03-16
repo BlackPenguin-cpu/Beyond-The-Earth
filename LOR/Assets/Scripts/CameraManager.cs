@@ -26,7 +26,7 @@ public class CameraManager : MonoBehaviour
             case ECameraManagerState.Normal:
                 break;
             case ECameraManagerState.FollowPlayer:
-                transform.position  = Player
+                transform.position = Player.instance.transform.position + new Vector3(0, 5, -10);
                 break;
             case ECameraManagerState.SpecialEffet:
                 break;
