@@ -15,6 +15,8 @@ public class Player : Entity
 
     [SerializeField]
     private GameObject skillCooldownTextObj;
+
+    private float parryingDuration;
     private void Start()
     {
         instance = this;
@@ -26,6 +28,7 @@ public class Player : Entity
         {
             skillCooldown[i] -= Time.deltaTime;
         }
+        parryingDuration -= Time.deltaTime;
     }
 
     private void InputFunc()
@@ -74,6 +77,8 @@ public class Player : Entity
             SkillCooldownNotYetText("ÆĞ¸µ");
             return;
         }
+
+        parryingDuration = 1;
     }
     private void SkillCooldownNotYetText(string SkillName)
     {
@@ -107,6 +112,10 @@ public class Player : Entity
 
     protected override void Hit()
     {
+        if (parryingDuration > 0)
+        {
+
+        }
         CameraManager.instance.CameraShake(2, 0.5f);
     }
 
