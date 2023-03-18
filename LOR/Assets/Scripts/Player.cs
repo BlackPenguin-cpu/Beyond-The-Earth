@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,20 +15,31 @@ public class Player : Entity
     public float[] skillCooldown = new float[3];
     public float[] skillNowCooldown = new float[3];
 
+    public int attackLevel = 1;
+    public float attackRadius;
+    public float attackDamage;
+
     [SerializeField]
-    private GameObject skillCooldownTextObj;
+    private GameObject skillCooldownTextParents;
+    [SerializeField]
+    private ParticleSystem parryingParticles;
+    private Text skillCooldownText;
 
     private float parryingDuration;
-    private void Start()
+    private void Awake()
     {
         instance = this;
+    }
+    private void Start()
+    {
+        skillCooldownText = Resources.Load<Text>("SkillCooldownText");
     }
     private void Update()
     {
         InputFunc();
-        for (int i = 0; i < skillCooldown.Length; i++)
+        for (int i = 0; i < skillNowCooldown.Length; i++)
         {
-            skillCooldown[i] -= Time.deltaTime;
+            skillNowCooldown[i] -= Time.deltaTime;
         }
         parryingDuration -= Time.deltaTime;
     }
@@ -36,7 +49,7 @@ public class Player : Entity
         Move();
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Attack();
+            Skill3();
         }
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -47,9 +60,24 @@ public class Player : Entity
             Skill2();
         }
     }
-    private void Attack()
+    private void ParryingAttack()
     {
+        Debug.Log("parrying");
 
+        int targetLayer = 1 << LayerMask.NameToLayer("Enemy");
+        Collider[] hitObjects = Physics.OverlapSphere(transform.position, attackRadius, targetLayer);
+        switch (attackLevel)
+        {
+            case 1:
+                foreach (Collider target in hitObjects)
+                {
+                    Entity enemy = target.GetComponent<Entity>();
+                    enemy.Hp -= attackDamage;
+                }
+                break;
+            default:
+                break;
+        }
     }
     //heal
     private void Skill1()
@@ -59,6 +87,8 @@ public class Player : Entity
             SkillCooldownNotYetText("수리");
             return;
         }
+        skillNowCooldown[0] = skillCooldown[0];
+
     }
     //bomb
     private void Skill2()
@@ -68,6 +98,8 @@ public class Player : Entity
             SkillCooldownNotYetText("폭탄");
             return;
         }
+        skillNowCooldown[1] = skillCooldown[1];
+
     }
     //parrying
     private void Skill3()
@@ -79,17 +111,18 @@ public class Player : Entity
         }
 
         parryingDuration = 1;
+        skillNowCooldown[2] = skillCooldown[2];
     }
     private void SkillCooldownNotYetText(string SkillName)
     {
         string text = $"{SkillName}이 사용 준비 중 입니다...";
 
-        Text textComponent = Resources.Load<Text>("SkillText");
-        Instantiate(textComponent, skillCooldownTextObj.transform);
-        Vector3 vec = textComponent.transform.position + new Vector3(0, 50);
+        GameObject obj = Instantiate(skillCooldownText.gameObject, skillCooldownTextParents.transform);
+        Vector3 vec = obj.transform.position + new Vector3(0, 100);
 
-        textComponent.text = text;
-        StartCoroutine(TextEvade(textComponent, vec));
+        Text txt = obj.GetComponent<Text>();
+        txt.text = text;
+        StartCoroutine(TextEvade(txt, vec));
 
     }
     private IEnumerator TextEvade(Text text, Vector3 vec)
@@ -101,7 +134,7 @@ public class Player : Entity
 
             yield return null;
         }
-        Destroy(text);
+        Destroy(text.gameObject);
     }
 
     protected override void Die()
@@ -109,14 +142,40 @@ public class Player : Entity
         CameraManager.instance.CameraShake(5, 5f);
 
     }
-
     protected override void Hit()
     {
+        Debug.Log(parryingDuration);
         if (parryingDuration > 0)
         {
-
+            CameraManager.instance.Flash(0.2f, 0.8f);
+            skillNowCooldown[2] = 0;
+            ParryingAttack();
+            StartCoroutine(TimeStop(0.2f, 0.2f));
+            StartCoroutine(BarrelRoll(0.2f));
+            parryingParticles.Play();
+            return;
         }
-        CameraManager.instance.CameraShake(2, 0.5f);
+
+        CameraManager.instance.CameraShake(1, 0.5f, 0.01f);
+    }
+    private IEnumerator BarrelRoll(float duration)
+    {
+        Vector3 rot = Vector3.zero;
+        float rotPlus = 0;
+        while (rotPlus < 360)
+        {
+            rotPlus += Time.deltaTime * 360 * (1 / duration);
+            rot.z = rotPlus;
+            transform.eulerAngles = rot;
+            yield return null;
+        }
+        transform.eulerAngles = Vector3.zero;
+    }
+    private IEnumerator TimeStop(float timeScale, float duration)
+    {
+        Time.timeScale = timeScale;
+        yield return new WaitForSecondsRealtime(duration);
+        Time.timeScale = 1;
     }
 
     protected override void Move()
@@ -124,6 +183,6 @@ public class Player : Entity
         float hor = Input.GetAxisRaw("Horizontal");
         float ver = Input.GetAxisRaw("Vertical");
 
-        transform.position = new Vector3(hor, ver) * speed;
+        transform.position += new Vector3(hor, ver) * speed * Time.deltaTime;
     }
 }

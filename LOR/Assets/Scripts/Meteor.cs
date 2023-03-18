@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Meteor : Entity
+public class Meteor : BaseEnemy
 {
     protected override void Die()
     {
+        base.Die();
         for (int i = 0; i < transform.childCount; i++)
         {
             Transform obj = transform.GetChild(i);
@@ -17,11 +18,16 @@ public class Meteor : Entity
 
     protected override void Hit()
     {
-
+        base.Hit();
     }
 
     protected override void Move()
     {
-        throw new System.NotImplementedException();
+        base.Move();
+    }
+    protected override void OnTriggerEnter(Collider other)
+    {
+        base.OnTriggerEnter(other);
+        Die();
     }
 }
