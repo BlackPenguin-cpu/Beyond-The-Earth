@@ -18,6 +18,7 @@ public class Player : Entity
     public int attackLevel = 1;
     public float attackRadius;
     public float attackDamage;
+    public float invincibleDuration;
 
     [SerializeField]
     private GameObject skillCooldownTextParents;
@@ -26,6 +27,19 @@ public class Player : Entity
     private Text skillCooldownText;
 
     private float parryingDuration;
+
+    public override float Hp
+    {
+        get => base.Hp;
+        set
+        {
+            if (value - hp <= 0 && invincibleDuration > 0)
+            {
+                return;
+            }
+            base.Hp = value;
+        }
+    }
     private void Awake()
     {
         instance = this;
@@ -42,6 +56,7 @@ public class Player : Entity
             skillNowCooldown[i] -= Time.deltaTime;
         }
         parryingDuration -= Time.deltaTime;
+        invincibleDuration -= Time.deltaTime;
     }
 
     private void InputFunc()
@@ -139,7 +154,7 @@ public class Player : Entity
 
     protected override void Die()
     {
-        CameraManager.instance.CameraShake(5, 5f);
+        //CameraManager.instance.CameraShake(5, 5f);
 
     }
     protected override void Hit()
@@ -147,17 +162,25 @@ public class Player : Entity
         Debug.Log(parryingDuration);
         if (parryingDuration > 0)
         {
-            CameraManager.instance.Flash(0.2f, 0.8f);
-            skillNowCooldown[2] = 0;
-            ParryingAttack();
-            StartCoroutine(TimeStop(0.2f, 0.2f));
-            StartCoroutine(BarrelRoll(0.2f));
-            parryingParticles.Play();
+            parryingDuration = 0;
+            DoParrying();
             return;
         }
 
-        CameraManager.instance.CameraShake(1, 0.5f, 0.01f);
+        CameraManager.instance.CameraShake(0.1f, 0.5f, 0.01f);
+        invincibleDuration = 0.4f;
     }
+    private void DoParrying()
+    {
+        CameraManager.instance.Flash(0.2f, 0.8f);
+        CameraManager.instance.OnParryingCameraEffect();
+        skillNowCooldown[2] = 0;
+        ParryingAttack();
+        StartCoroutine(TimeStop(0.2f, 0.2f));
+        StartCoroutine(BarrelRoll(0.2f));
+        parryingParticles.Play();
+    }
+    #region EffectFunc
     private IEnumerator BarrelRoll(float duration)
     {
         Vector3 rot = Vector3.zero;
@@ -177,7 +200,7 @@ public class Player : Entity
         yield return new WaitForSecondsRealtime(duration);
         Time.timeScale = 1;
     }
-
+    #endregion
     protected override void Move()
     {
         float hor = Input.GetAxisRaw("Horizontal");

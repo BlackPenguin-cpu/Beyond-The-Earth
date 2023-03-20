@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
 
 public enum ECameraManagerState
@@ -17,8 +18,16 @@ public class CameraManager : MonoBehaviour
     public Image flashImage;
     public ECameraManagerState state;
 
+    private Player player;
+    private Camera mainCamera;
+    private void Awake()
+    {
+        instance = this;
+    }
     private void Start()
     {
+        mainCamera = GetComponent<Camera>();
+        player = Player.instance;
         instance = this;
     }
     private void Update()
@@ -42,14 +51,14 @@ public class CameraManager : MonoBehaviour
     }
     private IEnumerator CamearaShakeCoroutine(float scale, float duration, float delay = 0.1f)
     {
-        Vector3 originPos = transform.position;
+        WaitForSeconds waitTime = new WaitForSeconds(delay);
         while (duration > 0)
         {
             transform.position += (Vector3)((Vector2)Random.insideUnitSphere * scale);
 
+            Debug.Log(duration);
             duration -= delay;
-            yield return new WaitForSeconds(delay);
-            transform.position = originPos;
+            yield return waitTime;
         }
     }
     public void Flash(float duration, float startAlpha)
@@ -68,5 +77,25 @@ public class CameraManager : MonoBehaviour
             yield return null;
         }
         flashImage.color = Color.clear;
+    }
+    public void OnParryingCameraEffect()
+    {
+        StartCoroutine(OnParryingViewSize());
+    }
+    private IEnumerator OnParryingViewSize()
+    {
+        while (mainCamera.fieldOfView < 70)
+        {
+            mainCamera.fieldOfView += 5;
+            yield return new WaitForSeconds(0.0001f);
+        }
+        while (mainCamera.fieldOfView > 60)
+        {
+            mainCamera.fieldOfView -= 1;
+            yield return new WaitForSeconds(0.005f);
+        }
+
+
+        yield return null;
     }
 }
