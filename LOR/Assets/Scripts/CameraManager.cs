@@ -37,7 +37,8 @@ public class CameraManager : MonoBehaviour
             case ECameraManagerState.Normal:
                 break;
             case ECameraManagerState.FollowPlayer:
-                transform.position = Vector3.Lerp(transform.position, Player.instance.transform.position + new Vector3(0, 1, -10), Time.deltaTime * cameraSpeed);
+                transform.position = Vector3.Lerp(transform.position, Player.instance.transform.position + new Vector3(0, 5, -10), Time.deltaTime * cameraSpeed);
+                transform.rotation = Quaternion.Euler(Vector3.Lerp(transform.rotation.eulerAngles, new Vector3(30, 0, 0), Time.deltaTime * cameraSpeed));
                 break;
             case ECameraManagerState.SpecialEffet:
                 break;
