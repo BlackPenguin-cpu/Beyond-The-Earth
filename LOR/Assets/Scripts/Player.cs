@@ -21,6 +21,9 @@ public class Player : Entity
     public float invincibleDuration;
 
     [SerializeField]
+    private GameObject parringShieldObj;
+
+    [SerializeField]
     private GameObject skillCooldownTextParents;
     [SerializeField]
     private ParticleSystem parryingParticles;
@@ -57,6 +60,8 @@ public class Player : Entity
         }
         parryingDuration -= Time.deltaTime;
         invincibleDuration -= Time.deltaTime;
+        parringShieldObj.SetActive(parryingDuration > 0);
+        parringShieldObj.transform.Rotate(0, Time.deltaTime * 50, 0);
     }
 
     private void InputFunc()
@@ -125,9 +130,20 @@ public class Player : Entity
             return;
         }
 
+        StartCoroutine(OnParryingEffect());
         parryingDuration = 1;
         skillNowCooldown[2] = skillCooldown[2];
     }
+    IEnumerator OnParryingEffect()
+    {
+        parringShieldObj.transform.localScale = Vector3.one;
+        while (parringShieldObj.transform.localScale.z < attackLevel + 4)
+        {
+            parringShieldObj.transform.localScale += new Vector3(0.4f, 0.4f, 0.4f);
+            yield return new WaitForSeconds(0.01f);
+        }
+    }
+
     private void SkillCooldownNotYetText(string SkillName)
     {
         string text = $"{SkillName}이 사용 준비 중 입니다...";
