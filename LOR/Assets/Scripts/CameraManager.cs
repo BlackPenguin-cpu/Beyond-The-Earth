@@ -57,7 +57,6 @@ public class CameraManager : MonoBehaviour
         {
             transform.position += (Vector3)((Vector2)Random.insideUnitSphere * scale);
 
-            Debug.Log(duration);
             duration -= delay;
             yield return waitTime;
         }
