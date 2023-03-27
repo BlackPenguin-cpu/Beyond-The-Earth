@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class BezierCurvesTest : MonoBehaviour
 {
@@ -21,29 +20,21 @@ public class BezierCurvesTest : MonoBehaviour
             Target.transform.position = BezierCurve(pos, i);
             yield return null;
         }
-
     }
-
-    private Vector3 BezierCurve(Vector3[] pos, float i)
+    private Vector3 BezierCurve(Vector3[] pos, float index)
     {
-        Vector3 point1;
-        Vector3 point2;
-        Vector3 point3;
+        List<Vector3> points = new List<Vector3>(pos.Length);
 
-        Vector3 point4;
-        Vector3 point5;
+        for (int i = 0; i < pos.Length; i++)
+            points[i] = pos[i];
 
-        Vector3 point6;
-
-        point1 = Vector3.Lerp(pos[0], pos[1], curveValue);
-        point2 = Vector3.Lerp(pos[1], pos[2], curveValue);
-        point3 = Vector3.Lerp(pos[2], pos[3], curveValue);
-
-        point4 = Vector3.Lerp(point1, point2, i);
-        point5 = Vector3.Lerp(point2, point3, i);
-
-        point6 = Vector3.Lerp(point4, point5, i);
-
-        return point6;
+        for (int i = pos.Length; i > 0; i--)
+        {
+            for (int j = 0; j < i; j++)
+            {
+                points[i] = Vector3.Lerp(pos[j], pos[j + 1], index);
+            }
+        }
+        return points[0];
     }
 }

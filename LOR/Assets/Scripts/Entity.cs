@@ -6,10 +6,10 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public abstract class Entity : MonoBehaviour
 {
-    public float maxHp;
+    public float maxHp = 1;
     public float speed;
     [SerializeField]
-    protected float hp;
+    protected float hp ;
     public virtual float Hp
     {
         get { return hp; }

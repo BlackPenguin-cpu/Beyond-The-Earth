@@ -3,13 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
-public class ShootEnemy : MonoBehaviour
+public class LaserEnemy : BaseEnemy
 {
-    [SerializeField]
-    private float speed = 7;
-    [SerializeField]
-    private float attackDamage = 7;
-
     private Player player;
     private LineRenderer lineRenderer;
 
@@ -20,9 +15,9 @@ public class ShootEnemy : MonoBehaviour
         player = Player.instance;
         lineRenderer = GetComponent<LineRenderer>();
     }
-    private void Update()
+    protected override void Update()
     {
-        transform.Translate(new Vector3(0, 0, -speed * Time.deltaTime));
+        base.Update();
 
         isAttack = Vector3.Distance(player.transform.position, transform.position) < 30;
         lineRenderer.enabled = isAttack;
@@ -35,11 +30,15 @@ public class ShootEnemy : MonoBehaviour
             if (attackDuration > 2)
             {
                 attackDuration = 0;
-                player.Hp -= attackDamage;
+                player.Hp -= attackDmg;
                 lineRenderer.endColor = Color.cyan;
             }
         }
-
+    }
+    protected override void Move()
+    {
+        base.Move();
+        transform.Translate(new Vector3(0, 0, -speed * Time.deltaTime));
     }
 
 }

@@ -175,7 +175,6 @@ public class Player : Entity
     }
     protected override void Hit()
     {
-        Debug.Log(parryingDuration);
         if (parryingDuration > 0)
         {
             parryingDuration = 0;
