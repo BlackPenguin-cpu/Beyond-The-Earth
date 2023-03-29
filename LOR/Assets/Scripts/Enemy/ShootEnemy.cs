@@ -29,7 +29,7 @@ public class ShootEnemy : BaseEnemy
     {
         Vector3[] pos = new Vector3[3];
         pos[0] = transform.position;
-        pos[1] = (transform.position - player.transform.position) / 2 + Random.onUnitSphere * 15;
+        pos[1] = (transform.position - player.transform.position) / 2 + Random.insideUnitSphere * 100;
         pos[2] = player.transform.position;
 
 
