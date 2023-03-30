@@ -19,7 +19,9 @@ public class LaserEnemy : BaseEnemy
     {
         base.Update();
 
-        isAttack = Vector3.Distance(player.transform.position, transform.position) < 30;
+        if (player.transform.position.z > transform.position.z) isAttack = false;
+        else
+            isAttack = Vector3.Distance(player.transform.position, transform.position) < 60;
         lineRenderer.enabled = isAttack;
         lineRenderer.SetPosition(0, transform.position);
         lineRenderer.SetPosition(1, player.transform.position);
