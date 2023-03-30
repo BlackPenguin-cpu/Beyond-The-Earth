@@ -6,6 +6,11 @@ public class BaseBullet : Entity
 {
     public bool isPlayerBullet;
     public float attackDmg;
+    public float lifeTime = 3;
+    protected virtual void Start()
+    {
+        Destroy(gameObject, lifeTime);
+    }
     protected override void Die()
     {
         Destroy(gameObject);
