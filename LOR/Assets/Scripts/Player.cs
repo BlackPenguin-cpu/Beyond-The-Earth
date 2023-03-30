@@ -201,13 +201,13 @@ public class Player : Entity
         for (int i = 0; i < attackLevel + 2; i++)
         {
             hommingBullet.isPlayerBullet = true;
-            HommingBullet bullet = Instantiate(hommingBullet, transform.position, Quaternion.Euler(Random.Range(0, 360), Random.Range(110, 250), 0));
+            HommingBullet bullet = Instantiate(hommingBullet, transform.position, Quaternion.Euler(Random.Range(-360, 360), Random.Range(110, 250), 0));
             Debug.Log(bullet.isPlayerBullet);
             bullet.attackDmg = attackDamage / 2;
             bullet.speed = attackLevel * 5 + 30;
             bullet.isPlayerBullet = true;
             bullet.hommingDuration = 2;
-            bullet.hommingPower = 5;
+            bullet.hommingPower = 10;
             if (FindObjectOfType<BaseEnemy>())
                 bullet.target = FindObjectOfType<BaseEnemy>().gameObject;
         }

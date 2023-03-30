@@ -24,8 +24,8 @@ public class BaseBullet : Entity
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(isPlayerBullet ? "Enemy" : "Player"))
-        {
-            other.GetComponent<Entity>().Hp -= attackDmg;
+        { 
+            other.GetComponentInParent<Entity>().Hp -= attackDmg;
             Debug.Log(other.name);
             Hp--;
         }
