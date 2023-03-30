@@ -29,6 +29,8 @@ public class Player : Entity
     private ParticleSystem parryingParticles;
     private Text skillCooldownText;
 
+
+    private HommingBullet hommingBullet;
     private float parryingDuration;
 
     public override float Hp
@@ -50,6 +52,7 @@ public class Player : Entity
     private void Start()
     {
         skillCooldownText = Resources.Load<Text>("SkillCooldownText");
+        hommingBullet = Resources.Load<HommingBullet>("Bullet/HommingBullet");
     }
     private void Update()
     {
@@ -194,6 +197,20 @@ public class Player : Entity
         StartCoroutine(TimeStop(0.2f, 0.2f));
         StartCoroutine(BarrelRoll(0.2f));
         parryingParticles.Play();
+
+        for (int i = 0; i < attackLevel + 2; i++)
+        {
+            hommingBullet.isPlayerBullet = true;
+            HommingBullet bullet = Instantiate(hommingBullet, transform.position, Quaternion.Euler(Random.Range(0, 360), Random.Range(110, 250), 0));
+            Debug.Log(bullet.isPlayerBullet);
+            bullet.attackDmg = attackDamage / 2;
+            bullet.speed = attackLevel * 5 + 30;
+            bullet.isPlayerBullet = true;
+            bullet.hommingDuration = 2;
+            bullet.hommingPower = 5;
+            if (FindObjectOfType<BaseEnemy>())
+                bullet.target = FindObjectOfType<BaseEnemy>().gameObject;
+        }
     }
     #region EffectFunc
     private IEnumerator BarrelRoll(float duration)

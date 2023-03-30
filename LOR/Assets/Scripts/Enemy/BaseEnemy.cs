@@ -8,6 +8,10 @@ public abstract class BaseEnemy : Entity
     protected virtual void Update()
     {
         Move();
+        if (transform.position.z < -5)
+        {
+            Destroy(gameObject);
+        }
     }
 
     protected override void Die()

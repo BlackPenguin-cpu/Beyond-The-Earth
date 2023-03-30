@@ -5,6 +5,7 @@ using UnityEngine;
 public class ShootEnemy : BaseEnemy
 {
     public float attackDelay;
+    public float bezierAreaScale;
     private float nowAttackDelay;
 
     private BezierBullet bezierBullet;
@@ -19,7 +20,7 @@ public class ShootEnemy : BaseEnemy
         base.Update();
         nowAttackDelay += Time.deltaTime;
 
-        if (nowAttackDelay > attackDelay)
+        if (nowAttackDelay > attackDelay && transform.position.z > player.transform.position.z)
         {
             Attack();
             nowAttackDelay = 0;
@@ -29,7 +30,8 @@ public class ShootEnemy : BaseEnemy
     {
         Vector3[] pos = new Vector3[3];
         pos[0] = transform.position;
-        pos[1] = (transform.position - player.transform.position) / 2 + Random.insideUnitSphere * 100;
+        pos[1] = transform.position + Random.insideUnitSphere * bezierAreaScale;
+        //pos[1] = (transform.position - player.transform.position) / 2 + Random.insideUnitSphere * bezierAreaScale;
         pos[2] = player.transform.position;
 
 
@@ -39,6 +41,10 @@ public class ShootEnemy : BaseEnemy
         bezierComponent.isPlayerBullet = false;
         bezierBullet.maxHp = 1;
         bezierBullet.attackDmg = attackDmg;
-
+    }
+    protected override void Move()
+    {
+        base.Move();
+        transform.Translate(new Vector3(0, 0, -speed * Time.deltaTime));
     }
 }

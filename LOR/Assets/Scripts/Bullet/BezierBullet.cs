@@ -14,15 +14,16 @@ public class BezierBullet : BaseBullet
     {
         targetPos = pos;
     }
-    public void Start()
+    protected override void Start()
     {
+        base.Start();
         StartCoroutine(BezierCoroutine());
     }
     private IEnumerator BezierCoroutine()
     {
+        WaitForFixedUpdate waitForFixedUpdate = new WaitForFixedUpdate();
         while (processingValue < 1f)
         {
-            Debug.Log(processingValue);
             processingValue += Time.deltaTime * bezierSpeed;
 
             Vector3 pos = BezierCurve(targetPos, processingValue);
@@ -32,7 +33,7 @@ public class BezierBullet : BaseBullet
                 transform.rotation = Quaternion.LookRotation(dir.normalized);
             transform.position = pos;
 
-            yield return null;
+            yield return waitForFixedUpdate;
         }
 
         while (true)
