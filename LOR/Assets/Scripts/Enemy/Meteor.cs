@@ -11,9 +11,12 @@ public class Meteor : BaseEnemy
         {
             Transform obj = transform.GetChild(i);
             obj.parent = null;
-            obj.GetComponent<Rigidbody>().AddForce(Random.insideUnitCircle * 5);
-            Destroy(obj, 3);
+            Destroy(obj.GetComponent<SpringJoint>());
+            obj.GetComponent<Rigidbody>().AddForce(Random.insideUnitCircle * 40, ForceMode.Impulse);
+            Destroy(obj.gameObject, 3);
         }
+        GetComponent<Rigidbody>().AddForce(Random.insideUnitCircle * 40, ForceMode.Impulse);
+        Destroy(gameObject, 3);
     }
 
     protected override void Hit()
@@ -24,6 +27,7 @@ public class Meteor : BaseEnemy
     protected override void Move()
     {
         base.Move();
+        transform.position += Vector3.back * speed * Time.deltaTime;
     }
     protected override void OnTriggerEnter(Collider other)
     {

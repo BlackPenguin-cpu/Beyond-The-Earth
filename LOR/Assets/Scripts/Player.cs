@@ -202,7 +202,6 @@ public class Player : Entity
         {
             hommingBullet.isPlayerBullet = true;
             HommingBullet bullet = Instantiate(hommingBullet, transform.position, Quaternion.Euler(Random.Range(-360, 360), Random.Range(110, 250), 0));
-            Debug.Log(bullet.isPlayerBullet);
             bullet.attackDmg = attackDamage / 2;
             bullet.speed = attackLevel * 5 + 30;
             bullet.isPlayerBullet = true;

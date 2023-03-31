@@ -26,7 +26,6 @@ public class BaseBullet : Entity
         if (other.CompareTag(isPlayerBullet ? "Enemy" : "Player"))
         { 
             other.GetComponentInParent<Entity>().Hp -= attackDmg;
-            Debug.Log(other.name);
             Hp--;
         }
     }
