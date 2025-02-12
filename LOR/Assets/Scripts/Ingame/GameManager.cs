@@ -61,9 +61,9 @@ public class GameManager : MonoBehaviour
             nowBossTimer = -9999999;
         }
         if (isBossOn)
-            BossUI.transform.position = Vector3.Lerp(BossUI.transform.position, new Vector3(960, 1050, 0), Time.deltaTime * 10);
+            BossUI.transform.localPosition = Vector3.Lerp(BossUI.transform.localPosition, new Vector3(0, 500, 0), Time.deltaTime * 10);
         else
-            BossUI.transform.position = Vector3.Lerp(BossUI.transform.position, new Vector3(960, 1400, 0), Time.deltaTime * 10);
+            BossUI.transform.localPosition = Vector3.Lerp(BossUI.transform.localPosition, new Vector3(0, 800, 0), Time.deltaTime * 10);
         scoreText.text = (numStringFormat((int)score));
         stageText.text = $"Stage {stageLevel}";
     }
